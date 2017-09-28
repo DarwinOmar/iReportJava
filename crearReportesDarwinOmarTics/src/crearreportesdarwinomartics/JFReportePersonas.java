@@ -180,11 +180,9 @@ public class JFReportePersonas extends javax.swing.JFrame {
 
         Reporte r = new Reporte();
         try {
-            r.gReporte("reporte_materiales.jasper");
-//            r.generarReporte("reporte_materiales.jasper", null);
-//            r.generarReporte("reporte_persona.jasper", null, "archivo.pdf", true);
+
             r.generarReporte("reporte_persona.jasper", null);
-//            r.generarReporteParametro(nombreArchivo, null, nombreArchivoGuardar, PROPERTIES);
+
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }

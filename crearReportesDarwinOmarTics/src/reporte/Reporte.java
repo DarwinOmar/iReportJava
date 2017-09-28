@@ -95,13 +95,10 @@ public class Reporte extends DAOPostgres {
         Map param;
         param = new HashMap();
         try {
-
             URL in = this.getClass().getResource(nombreArchivoJasper);             //se carga el reporte
 //            System.out.println(in); Me retorna la ruta del archivo
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(in);
             //se procesa el archivo jasper
-            File archivo = new File(in.getPath());
-            if (archivo.exists() == true) {
                 if (listaParametro != null) {
                     for (Parametro par : listaParametro) {
                         param.put(par.getNombre(), par.getValor());
@@ -111,11 +108,7 @@ public class Reporte extends DAOPostgres {
                 }
                 JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, param, this.conexionReporte());
                 JasperViewer view = new JasperViewer(jasperPrint, false);
-                view.setVisible(true);
-                
-            } else {
-                JOptionPane.showMessageDialog(null, "No Existe el archivo");
-            }
+                view.setVisible(true);     
         } catch (JRException ex) {
             throw ex;
         }
