@@ -5,7 +5,6 @@
  */
 package crearreportesdarwinomartics;
 
-import java.net.URL;
 
 /**
  *
@@ -16,10 +15,8 @@ public class CrearReportesDarwinOmarTics {
     /**
      * @param args the command line arguments
      */
-   
 
     public static void main(String[] args) {
-        
         
         JFReportePersonas r = new JFReportePersonas();
         r.setVisible(true);

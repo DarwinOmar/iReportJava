@@ -95,6 +95,7 @@ public class Reporte extends DAOPostgres {
         Map param;
         param = new HashMap();
         try {
+           
             URL in = this.getClass().getResource(nombreArchivoJasper);             //se carga el reporte
 //            System.out.println(in); Me retorna la ruta del archivo
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(in);
