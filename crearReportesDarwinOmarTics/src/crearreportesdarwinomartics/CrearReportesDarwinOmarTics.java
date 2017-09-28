@@ -20,12 +20,10 @@ public class CrearReportesDarwinOmarTics {
 
     public static void main(String[] args) {
         
-                  System.out.println(System.getProperty("user.dir"));  ;
-
         
-//        JFReportePersonas r = new JFReportePersonas();
-//        r.setVisible(true);
-//        r.setLocationRelativeTo(null);
+        JFReportePersonas r = new JFReportePersonas();
+        r.setVisible(true);
+        r.setLocationRelativeTo(null);
         
     }
 

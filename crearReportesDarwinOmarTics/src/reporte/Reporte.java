@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -30,7 +29,7 @@ public class Reporte extends DAOPostgres {
     public void generarReporte(String nombreArchivo) throws Exception {
         String ubicacionReporte;
         try {
-            ubicacionReporte = System.getProperty("user.dir") + "/src/reportes/" + nombreArchivo;
+            ubicacionReporte = System.getProperty("user.dir") + "/src/reporte/" + nombreArchivo;
             JasperReport jasperReport = (JasperReport) JRLoader.loadObjectFromFile(ubicacionReporte);
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, this.conexionReporte());
             JasperViewer view = new JasperViewer(jasperPrint, false);
@@ -51,7 +50,7 @@ public class Reporte extends DAOPostgres {
      * @param operacion
      * @throws java.lang.Exception
      */
-    public void generarReporteParametro(String nombreArchivo, List<Parametro> listaParametro, String nombreArchivoGuardar, int operacion) throws Exception {
+    public void generarReporte(String nombreArchivo, List<Parametro> listaParametro) throws Exception {
 
         String ubicacionReporte;
         File fichero = null;
@@ -80,34 +79,11 @@ public class Reporte extends DAOPostgres {
         }
     }
 
-    public void generarReportev1(String nombreArchivoJasper) throws ClassNotFoundException, SQLException, JRException {
-        JasperReport jasperReport;
-        JasperPrint jasperPrint;
+    public void gReporte(String nombreArchivoJasper) throws ClassNotFoundException, SQLException, JRException {
         try {
             URL in = this.getClass().getResource(nombreArchivoJasper);             //se carga el reporte
-            System.out.println(in);// Me retorna la ruta del archivo
-            jasperReport = (JasperReport) JRLoader.loadObject(in);
-            jasperPrint = JasperFillManager.fillReport(jasperReport, null, this.conexionReporte());
-            JasperViewer view = new JasperViewer(jasperPrint, false);
-            view.setVisible(true);
-        } catch (JRException ex) {
-            throw ex;
-        }
-    }
-
-    public void generarReportev2(String nombreArchivoJasper, List<Parametro> listaParametro) throws JRException, SQLException, ClassNotFoundException {
-        Map param = new HashMap();
-        try {
-            URL in = this.getClass().getResource(nombreArchivoJasper);
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(in);
-            if (listaParametro != null) {
-                for (Parametro par : listaParametro) {
-                    param.put(par.getNombre(), par.getValor());
-                }
-            } else {
-                param = null;
-            }
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, param, this.conexionReporte());
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, this.conexionReporte());
             JasperViewer view = new JasperViewer(jasperPrint, false);
             view.setVisible(true);
         } catch (JRException ex) {
@@ -115,29 +91,31 @@ public class Reporte extends DAOPostgres {
         }
     }
 
-    public void generarReporte(String nombreArchivoJasper, List<Parametro> listaParametro, String nombreArchivoPDF) throws JRException, SQLException, ClassNotFoundException {
-        JasperReport jasperReport;
-        JasperPrint jasperPrint;
+    public void gReporte(String nombreArchivoJasper, List<Parametro> listaParametro) throws JRException, SQLException, ClassNotFoundException {
         Map param;
         param = new HashMap();
         try {
-            //se carga el reporte
-            URL in = this.getClass().getResource(nombreArchivoJasper);
+
+            URL in = this.getClass().getResource(nombreArchivoJasper);             //se carga el reporte
 //            System.out.println(in); Me retorna la ruta del archivo
-            jasperReport = (JasperReport) JRLoader.loadObject(in);
+            JasperReport jasperReport = (JasperReport) JRLoader.loadObject(in);
             //se procesa el archivo jasper
-            if (listaParametro != null) {
-                for (Parametro par : listaParametro) {
-                    param.put(par.getNombre(), par.getValor());
+            File archivo = new File(in.getPath());
+            if (archivo.exists() == true) {
+                if (listaParametro != null) {
+                    for (Parametro par : listaParametro) {
+                        param.put(par.getNombre(), par.getValor());
+                    }
+                } else {
+                    param = null;
                 }
+                JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, param, this.conexionReporte());
+                JasperViewer view = new JasperViewer(jasperPrint, false);
+                view.setVisible(true);
+                
             } else {
-                param = null;
+                JOptionPane.showMessageDialog(null, "No Existe el archivo");
             }
-            jasperPrint = JasperFillManager.fillReport(jasperReport, param, this.conexionReporte());
-            JasperViewer view = new JasperViewer(jasperPrint, false);
-            view.setVisible(true);
-            //se crea el archivo PDF
-            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\xampp\\htdocs\\Archivos\\" + nombreArchivoPDF + ".pdf");
         } catch (JRException ex) {
             throw ex;
         }

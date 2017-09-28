@@ -6,6 +6,7 @@
 package crearreportesdarwinomartics;
 
 import dao.Parametro;
+import java.io.IOException;
 import reporte.Reporte;
 import java.sql.SQLException;
 import java.time.Clock;
@@ -72,7 +73,7 @@ public class JFReportePersonas extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 511, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
                 .addGap(18, 18, 18))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(111, 111, 111)
@@ -123,7 +124,7 @@ public class JFReportePersonas extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtEdad, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 147, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -156,7 +157,7 @@ public class JFReportePersonas extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1)
             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
@@ -167,7 +168,7 @@ public class JFReportePersonas extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton2))
         );
@@ -177,9 +178,18 @@ public class JFReportePersonas extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        generarReporte();
-
+        Reporte r = new Reporte();
+        try {
+            r.gReporte("reporte_materiales.jasper");
+//            r.generarReporte("reporte_materiales.jasper", null);
+//            r.generarReporte("reporte_persona.jasper", null, "archivo.pdf", true);
+            r.generarReporte("reporte_persona.jasper", null);
+//            r.generarReporteParametro(nombreArchivo, null, nombreArchivoGuardar, PROPERTIES);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
+
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         System.exit(-1);
@@ -187,35 +197,20 @@ public class JFReportePersonas extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void generarReporteConParametros() {
         Reporte r = new Reporte();
         List<Parametro> listaParametros = new ArrayList<>();
-        listaParametros.add(new Parametro("codigo_proveedor", Integer.parseInt(this.txtEdad.getText())));
-
+        listaParametros.add(new Parametro("p_edad", Integer.parseInt(this.txtEdad.getText())));
         try {
-            r.generarReportev1("reporte_persona.jasper");
+            r.gReporte("reporte_persona_parametros.jasper", listaParametros);
         } catch (SQLException | JRException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
-    }
+    }//GEN-LAST:event_jButton3ActionPerformed
 
 
     private void txtEdadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEdadActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtEdadActionPerformed
-
-    private void generarReporte() {
-        Reporte r = new Reporte();
-        try {
-            r.generarReportev1("reporte_persona.jasper");
-        } catch (SQLException | JRException | ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
-        }
-    }
 
     /**
      * @param args the command line arguments
@@ -245,10 +240,8 @@ public class JFReportePersonas extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new JFReportePersonas().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new JFReportePersonas().setVisible(true);
         });
     }
 
@@ -264,4 +257,14 @@ public class JFReportePersonas extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField txtEdad;
     // End of variables declaration//GEN-END:variables
+
+    private void abrirWeb() {
+        String direccion = "http://darwinomartics.blogspot.pe/";
+        try {
+            Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + direccion);
+        } catch (IOException err) {
+            JOptionPane.showMessageDialog(null, "Error: " + err);
+        }
+    }
+
 }
